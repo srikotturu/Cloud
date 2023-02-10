@@ -2,7 +2,7 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-zip_codes = {
+weather = {
     "95220": "Rainy",
     "93510": "cloudy",
     "92301": "windy",
@@ -16,17 +16,12 @@ zip_codes = {
     "95410": "rainy"
 }
   
-@app.route("/weather_from_zip", methods=["GET"])
-def get_weather_from_zip():
-    zip_code = request.args.get("zip_code")
-    if zip_code:
-        weather = zip_codes.get(str(zip_code), None)
-        if weather:
-            return {f"weather condition for zip({zip_code})": weather}
-        else:
-            return {"error": "Zip code not found"}
+@app.route('/weather/<string:zip_code>', methods=['GET'])
+def weather_api(zip_code):
+    if zip_code in weather:
+        return weather[zip_code]
     else:
-        return {"error": "Please provide a zip code"}
+        return f"Weather information not available for {zip_code}"
 
 if __name__ == "__main__":
-    app.run()
+    app.run(port=5001)
